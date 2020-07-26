@@ -1,2 +1,2 @@
 # Dynamics
-Dynamics team
+Vehicle dynamics projects
