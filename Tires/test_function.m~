@@ -1,0 +1,3 @@
+[file,path] = uigetfile("*.mat");
+
+F_Z = getfield(load(path, 'FZ'), 'FZ');
