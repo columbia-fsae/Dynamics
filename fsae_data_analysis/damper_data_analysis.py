@@ -44,8 +44,8 @@ df["Wheel Center RR"] = df["Damper Pos RR"].astype(float) * r_mr
 
 # damper/wheel center velocity v.s. time
 
-for i in range(1, len(df["Damper Pos FL"]))
-    df["Damper Speed FL"] = df["Damper Pos FL"].astype(float)
+# for i in range(1, len(df["Damper Pos FL"]))
+#     df["Damper Speed FL"] = df["Damper Pos FL"].astype(float)
 
 
 
