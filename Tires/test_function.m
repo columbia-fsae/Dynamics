@@ -164,7 +164,7 @@ for i=1:length(P_binvals)
     htitle = get(h,'Title');
     set(htitle,'String','F_z (N)','FontSize',10);
     
- if(i==1)
+    if(i==1)
         % Defining figures:
         [x_plot,y_plot] = meshgrid(0:0.25:4,linspace(FZ_binvals(1),FZ_binvals(end),11));      
         figure
