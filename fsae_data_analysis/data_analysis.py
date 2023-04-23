@@ -34,8 +34,7 @@ center_rch = (abs(rear_rch-front_rch)/wheelbase)*b + rear_rch # watch out for si
 
 date = "4_28"
 # pre-processing
-y_cols = ["Time","Acceleration X", "Acceleration Y", "Acceleration Z", "Damper Pos FL", "Damper Pos FR", "Damper Pos RL", "Damper Pos RR", "Wheel Speed FL", "Wheel Speed FR", "Wheel Speed RL", "Wheel Speed RR", "Steering Wheel Angle"]
-df = process_data("datafiles/"+sys.argv[1], y_cols)
+df = process_data("datafiles/"+sys.argv[1])
 
 # for offset dampers
 # ZERO offset		
@@ -69,7 +68,9 @@ graph_gg(df)
 graph_steer(df)
 # throttle
 
-# brake
+# brake pressures, longitudinal slip
+graph_brake_pres(df)
+graph_long_slip(df)
 
 # vehicle speed
 

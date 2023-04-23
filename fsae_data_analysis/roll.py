@@ -9,18 +9,18 @@ def calc_roll_angle(df, front_track, rear_track):
     df["Total Roll Angle"] = (df["Front Roll Angle"]+df["Rear Roll Angle"])/2
 
 def filter_downsample_rollangle(df):
-    n = round(len(df["Total Roll Angle"])/len(df["Acceleration X"]))
+    n = round(len(df["Total Roll Angle"])/len(df["G Force Long"]))
     #n = 12
     coef = np.ones(n) / n
 
-    df_downsampled = pd.DataFrame(columns=['Front Roll Angle (downsampled)', 'Rear Roll Angle (downsampled)', 'Total Roll Angle (downsampled)', 'Acceleration Y (downsampled)'])
+    df_downsampled = pd.DataFrame(columns=['Front Roll Angle (downsampled)', 'Rear Roll Angle (downsampled)', 'Total Roll Angle (downsampled)', 'G Force Lat (downsampled)'])
     df["Front Roll Angle (filtered)"] = lfilter(coef, 1, df["Front Roll Angle"])
     df["Rear Roll Angle (filtered)"] = lfilter(coef, 1, df["Rear Roll Angle"])
     df["Total Roll Angle (filtered)"] = lfilter(coef, 1, df["Total Roll Angle"])
     df_downsampled["Front Roll Angle (downsampled)"] = decimate(df["Front Roll Angle (filtered)"],n)
     df_downsampled["Rear Roll Angle (downsampled)"] = decimate(df["Rear Roll Angle (filtered)"],n)
     df_downsampled["Total Roll Angle (downsampled)"] = decimate(df["Total Roll Angle (filtered)"],n)
-    df_downsampled["Acceleration Y (downsampled)"] = decimate(df["Acceleration Y"],n)
+    df_downsampled["G Force Lat (downsampled)"] = decimate(df["G Force Lat"],n)
     return df_downsampled
 
 

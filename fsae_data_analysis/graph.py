@@ -76,11 +76,11 @@ def graph_gg(df):
     fig = plt.figure(fig_id)
 
     # make sure that these are the right ones, may need to flip signs/axes etc.
-    ayCol = "Acceleration Y"
-    axCol = "Acceleration X"
-    y = df[axCol].astype(float)
+    ayCol = "G Force Lat"
+    axCol = "G Force Long"
+    y = df[axCol]
     ax = plt.gca()
-    ax.scatter(df[ayCol].astype(float), y, marker = ".", s = 5, color=next(cycol))
+    ax.scatter(df[ayCol], y, marker = ".", s = 5, color=next(cycol))
     plt.xlabel("Ay (g)")
     plt.ylabel("Ax (g)")
     plt.title("g-g Diagram")
@@ -91,11 +91,11 @@ def graph_a(df):
     fig_id = fig_id+1
     fig = plt.figure(fig_id)
 
-    aCols = ["Acceleration X", "Acceleration Y"]
+    aCols = ["G Force Long", "G Force Lat"]
     for col in aCols:
-        y = df[col].astype(float)
+        y = df[col]
         ax = plt.gca()
-        ax.plot(df["Time"].astype(float), y, markersize=5, label = col, color=next(cycol))
+        ax.plot(df["Time"], y, markersize=5, label = col, color=next(cycol))
     
     plt.xlabel("Time (s)")
     plt.ylabel("Accel (g)")
@@ -116,9 +116,9 @@ def graph_wheel_speed(df):
 
     wheelSpeedCols = ["Wheel Speed FL", "Wheel Speed FR", "Wheel Speed RL", "Wheel Speed RR"]
     for col in wheelSpeedCols:
-        y = df[col].astype(float)
+        y = df[col]
         ax = plt.gca()
-        ax.plot(df["Time"].astype(float), y, markersize=5, label = col, color=next(cycol))
+        ax.plot(df["Time"], y, markersize=5, label = col, color=next(cycol))
     
     plt.xlabel("Time (s)")
     plt.ylabel("Wheel Speed (km/h)")
@@ -187,8 +187,8 @@ def graph_left_turn_roll(df, date):
     fig_id = fig_id+1
     fig = plt.figure(fig_id)
 
-    left_turns_i = df.index[df["Acceleration Y (downsampled)"].astype(float)<0].tolist()
-    accel_left = (df["Acceleration Y (downsampled)"].iloc[left_turns_i]).astype(float)
+    left_turns_i = df.index[df["G Force Lat (downsampled)"].astype(float)<0].tolist()
+    accel_left = (df["G Force Lat (downsampled)"].iloc[left_turns_i]).astype(float)
     left_roll_front = df["Front Roll Angle (downsampled)"].iloc[left_turns_i]
     left_roll_rear = df["Rear Roll Angle (downsampled)"].iloc[left_turns_i]
     left_roll_total = df["Total Roll Angle (downsampled)"].iloc[left_turns_i]
@@ -228,8 +228,8 @@ def graph_right_turn_roll(df, date):
     fig_id = fig_id+1
     fig = plt.figure(fig_id)
 
-    right_turns_i = df.index[df["Acceleration Y (downsampled)"].astype(float)>0].tolist()
-    accel_right = (df["Acceleration Y (downsampled)"].iloc[right_turns_i]).astype(float)
+    right_turns_i = df.index[df["G Force Lat (downsampled)"].astype(float)>0].tolist()
+    accel_right = (df["G Force Lat (downsampled)"].iloc[right_turns_i]).astype(float)
     right_roll_front = df["Front Roll Angle (downsampled)"].iloc[right_turns_i]
     right_roll_rear = df["Rear Roll Angle (downsampled)"].iloc[right_turns_i]
     right_roll_total = df["Total Roll Angle (downsampled)"].iloc[right_turns_i]
@@ -278,7 +278,7 @@ def graph_rollvtime(df):
     fig_id = fig_id+1
     fig = plt.figure(fig_id)
 
-    rollAngleCols = ["Front Roll Angle", "Rear Roll Angle", "Acceleration Y"] #"Total Roll Angle"
+    rollAngleCols = ["Front Roll Angle", "Rear Roll Angle", "G Force Lat"] #"Total Roll Angle"
     for col in rollAngleCols:
         y = df[col].astype(float)
         ax = plt.gca()
@@ -294,3 +294,51 @@ def graph_rollvtime(df):
 
     # Put a legend to the right of the current axis
     ax.legend(loc='center left', bbox_to_anchor=(1, 0.5))
+
+def graph_long_slip(df):
+    global fig_id
+    fig_id = fig_id+1
+    fig = plt.figure(fig_id)
+
+    longSlipPercent = ["Longitudinal Slip RL", "Longitudinal Slip RR"]
+    for col in longSlipPercent:
+        y = df[col].astype(float)
+        ax = plt.gca()
+        ax.plot(df["Time"].astype(float), y, markersize=5, label = col, color=next(cycol))
+    
+    plt.xlabel("Time (s)")
+    plt.ylabel("Longitudinal Slip Percent (%)")
+    plt.title("Longitudinal Slip Percent" + " v.s. Time")
+
+    # Shrink current axis by 20%
+    box = ax.get_position()
+    ax.set_position([box.x0, box.y0, box.width * 0.8, box.height])
+
+    # Put a legend to the right of the current axis
+    ax.legend(loc='center left', bbox_to_anchor=(1, 0.5))
+
+# brake pressures v.s. time
+def graph_brake_pres(df):
+    global fig_id
+    fig_id = fig_id+1
+    fig = plt.figure(fig_id)
+
+    brakePressures = ["Brake Pres Front", "Brake Pres Front"]
+    for col in brakePressures:
+        y = df[col].astype(float)
+        ax = plt.gca()
+        ax.plot(df["Time"].astype(float), y, markersize=5, label = col, color=next(cycol))
+    
+    plt.xlabel("Time (s)")
+    plt.ylabel("Brake Pressures (kPa)")
+    plt.title("Brake Pressures (kPa)" + " v.s. Time")
+
+    # Shrink current axis by 20%
+    box = ax.get_position()
+    ax.set_position([box.x0, box.y0, box.width * 0.8, box.height])
+
+    # Put a legend to the right of the current axis
+    ax.legend(loc='center left', bbox_to_anchor=(1, 0.5))
+
+
+# brake bias v.s. front pressure (scatter plot)
