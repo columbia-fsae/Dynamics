@@ -4,23 +4,36 @@ import matplotlib.pyplot as plt
 from graph import *
 from dampers import *
 from data import *
-
-# front_track = 48*25.4 #mm
-# sprung_weight=217.72*2.2 #lb
-# rear_track =46 * 25.4 #mm
+from roll import *
+import sys
+ 
+# total arguments
+n = len(sys.argv)
+if n > 2:
+    print("Too many arguments, this script takes 1 filepath.")
+ 
+front_track = 46.89*25.4 #mm
+sprung_weight=613.9 #lb -- an assumption
+rear_track =45.374*25.4 #mm
 front_IR = 1.064 #spring/wheel
 rear_IR=0.9033 #spring/wheel
-# wheelbase = 61 #in
-# front_wt_dist=0.455
-# rch=2 #in, roll center height
-# tot_weight = 720 #lb
-# cgh = 10 #in
+wheelbase = 61 #in
+front_wt_dist=0.499
+rch=2 #in, roll center height
+front_rch = 30.785/25.4 # in, front roll center height
+rear_rch = 15.763/25.4 # in, rear roll center height
+b = front_wt_dist*wheelbase
+a = wheelbase-b
+
+tot_weight = 713.9 #lb
+cgh = 9.831 #in
+center_rch = (abs(rear_rch-front_rch)/wheelbase)*b + rear_rch # watch out for signs here -- this works because our rear roll center is lower than the front
 
 
+date = "4_28"
 # pre-processing
-y_cols = ["Time","G Force Lat", "G Force Long", "G Force Vert", "Damper Pos FL", "Damper Pos FR", "Damper Pos RL", "Damper Pos RR", "Wheel Speed FL", "Wheel Speed FR", "Wheel Speed RL", "Wheel Speed RR", "Steering Wheel Angle"]
-df = process_data('4_28_autoX.csv', y_cols)
-data_to_float(df)
+y_cols = ["Time","Acceleration X", "Acceleration Y", "Acceleration Z", "Damper Pos FL", "Damper Pos FR", "Damper Pos RL", "Damper Pos RR", "Wheel Speed FL", "Wheel Speed FR", "Wheel Speed RL", "Wheel Speed RR", "Steering Wheel Angle"]
+df = process_data("datafiles/"+sys.argv[1], y_cols)
 
 # for offset dampers
 # ZERO offset		
@@ -39,19 +52,19 @@ graph_damper_pos(df)
 
 # damper/wheel center velocity v.s. time
 calc_damper_velocity(df)
-graph_damper_vel(df)
+#graph_damper_vel(df)
 # histograms for damper velocity
 graph_damper_vel_hist(df)
 
 # wheel speed v.s. time
 # might need to add virtual channel to convert this to km/h
-#graph_wheel_speed(df)
+graph_wheel_speed(df)
 
 # g-g diagram
-#graph_gg(df)
+graph_gg(df)
 
 # steering
-#graph_steer(df)
+graph_steer(df)
 # throttle
 
 # brake
@@ -61,4 +74,22 @@ graph_damper_vel_hist(df)
 # Ax and Ay vs. time
 #graph_a(df)
 
+#roll :)
+calc_roll_angle(df, front_track, rear_track)
+graph_rollvtime(df)
+df_downsampled = filter_downsample_rollangle(df)
+# left turns
+l_front_rg, l_rear_rg, l_total_rg = graph_left_turn_roll(df_downsampled, date)
+
+# right turns
+r_front_rg, r_rear_rg, r_total_rg = graph_right_turn_roll(df_downsampled, date)
+
+# roll stiffness
+m_roll = calc_roll_moment(cgh, center_rch, sprung_weight)
+KfrontL, KrearL, KtotL = calc_roll_stiffness(m_roll, l_front_rg, l_rear_rg, l_total_rg)
+KfrontR, KrearR, KtotR = calc_roll_stiffness(m_roll, r_front_rg, r_rear_rg, r_total_rg)
+
+print(KfrontL, KfrontR)
+print(KrearL, KrearR)
+print(KtotL, KtotR)
 plt.show()

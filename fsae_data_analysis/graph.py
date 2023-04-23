@@ -1,6 +1,8 @@
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
+from sklearn import linear_model
+
 # just for graph colors
 from itertools import cycle
 cycol = cycle('bgrcmk')
@@ -53,13 +55,6 @@ def graph_damper_vel(df):
     # Put a legend to the right of the current axis
     ax.legend(loc='center left', bbox_to_anchor=(1, 0.5))
 
-def graph_damper_vel_hist(df):
-    graph_histogram(df, "Damper Velocity FL (in)")
-    graph_histogram(df, "Damper Velocity FR (in)")
-    graph_histogram(df, "Damper Velocity RL (in)")
-    graph_histogram(df, "Damper Velocity RR (in)")
-
-
 # graph steering wheel angle
 def graph_steer(df):
     global fig_id
@@ -81,8 +76,8 @@ def graph_gg(df):
     fig = plt.figure(fig_id)
 
     # make sure that these are the right ones, may need to flip signs/axes etc.
-    ayCol = "G Force Lat"
-    axCol = "G Force Vert"
+    ayCol = "Acceleration Y"
+    axCol = "Acceleration X"
     y = df[axCol].astype(float)
     ax = plt.gca()
     ax.scatter(df[ayCol].astype(float), y, marker = ".", s = 5, color=next(cycol))
@@ -96,7 +91,7 @@ def graph_a(df):
     fig_id = fig_id+1
     fig = plt.figure(fig_id)
 
-    aCols = ["G Force Vert", "G Force Lat"]
+    aCols = ["Acceleration X", "Acceleration Y"]
     for col in aCols:
         y = df[col].astype(float)
         ax = plt.gca()
@@ -126,7 +121,7 @@ def graph_wheel_speed(df):
         ax.plot(df["Time"].astype(float), y, markersize=5, label = col, color=next(cycol))
     
     plt.xlabel("Time (s)")
-    plt.ylabel("Wheel Speed (km/h))")
+    plt.ylabel("Wheel Speed (km/h)")
     plt.title("Wheel Speed" + " v.s. Time")
 
     # Shrink current axis by 20%
@@ -137,34 +132,165 @@ def graph_wheel_speed(df):
     ax.legend(loc='center left', bbox_to_anchor=(1, 0.5))
 
 
-def graph_histogram(df, col):
+def graph_damper_vel_hist(df):
+    global fig_id
+    fig_id = fig_id+1
+    fig = plt.figure(fig_id)
+
+    fig, ((ax1, ax2),(ax3, ax4)) = plt.subplots(2, 2, num=fig_id)
+    graph_histogram(df, "Damper Velocity FL (in)",axes = ax1)
+    graph_histogram(df, "Damper Velocity FR (in)",axes = ax2)
+    graph_histogram(df, "Damper Velocity RL (in)",axes = ax3)
+    graph_histogram(df, "Damper Velocity RR (in)",axes = ax4)
+def graph_histogram(df, col, axes):
     bins = []
     for i in range(-20, 21):
         bins.append(i)
-    ax = df.hist(column=col, bins=bins, grid=False, color='#86bf91', zorder=2, rwidth=0.9)
-    ax = ax[0]
-    for x in ax:
+    x = df.hist(column=col, bins=bins, grid=False, ax = axes, color='#86bf91', zorder=2, rwidth=0.9)
         # Despine
-        x.spines['right'].set_visible(False)
-        x.spines['top'].set_visible(False)
-        x.spines['left'].set_visible(False)
+
+    # print(x)
+    x = x[0]
+    x.spines['right'].set_visible(False)
+    x.spines['top'].set_visible(False)
+    x.spines['left'].set_visible(False)
 
         # Switch off ticks
-        x.tick_params(axis="both", which="both", bottom="off", top="off", labelbottom="on", left="off", right="off", labelleft="on")
+    x.tick_params(axis="both", which="both", bottom="off", top="off", labelbottom="on", left="off", right="off", labelleft="on")
 
         # Draw horizontal axis lines
-        vals = x.get_yticks()
-        for tick in vals:
-            x.axhline(y=tick, linestyle='dashed', alpha=0.4, color='#eeeeee', zorder=1)
+    vals = x.get_yticks()
+    for tick in vals:
+        x.axhline(y=tick, linestyle='dashed', alpha=0.4, color='#eeeeee', zorder=1)
 
         # Remove title
-        x.set_title(col + " Frequency")
+    x.set_title(col + " Frequency")
 
         # Set x-axis label
-        x.set_xlabel(col, labelpad=20, weight='bold', size=12)
+    x.set_xlabel(col, labelpad=10, size=12)
 
         # Set y-axis label
-        x.set_ylabel("Frequency", labelpad=20, weight='bold', size=12)
-
+    x.set_ylabel("Frequency", labelpad=10, size=12)
         # Format y-axis label
-        #x.yaxis.set_major_formatter(StrMethodFormatter('{x:,g}'))
+    # x.yaxis.set_major_formatter(StrMethodFormatter('{x:,g}'))
+
+
+def abline(slope, intercept, label):
+    """Plot a line from slope and intercept"""
+    axes = plt.gca()
+    x_vals = np.array(axes.get_xlim())
+    y_vals = intercept + slope * x_vals
+    plt.plot(x_vals, y_vals, '--', color=next(cycol),label=label)
+
+def graph_left_turn_roll(df, date):
+    global fig_id
+    fig_id = fig_id+1
+    fig = plt.figure(fig_id)
+
+    left_turns_i = df.index[df["Acceleration Y (downsampled)"].astype(float)<0].tolist()
+    accel_left = (df["Acceleration Y (downsampled)"].iloc[left_turns_i]).astype(float)
+    left_roll_front = df["Front Roll Angle (downsampled)"].iloc[left_turns_i]
+    left_roll_rear = df["Rear Roll Angle (downsampled)"].iloc[left_turns_i]
+    left_roll_total = df["Total Roll Angle (downsampled)"].iloc[left_turns_i]
+
+    slope_front, intercept_front = linear_regression(accel_left, left_roll_front) # np.polyfit(accel_left, left_roll_front, 1)
+    slope_rear, intercept_rear = linear_regression(accel_left, left_roll_rear)
+    slope_total, intercept_total = linear_regression(accel_left, left_roll_total)
+
+    # print("left turn front roll gradient for " + date +": ", slope_front)
+    # print("left turn rear roll gradient for " + date +": ", slope_rear)
+    # print("left turn total roll gradient for " + date +": ", slope_total)
+
+    ax = plt.gca()
+    ax.scatter(accel_left, left_roll_front, marker = "o", s = 1, color=next(cycol),label = "front roll angle = " + str(slope_front) + "x + " + str(intercept_front))
+    ax.scatter(accel_left, left_roll_rear, marker = "o", s = 1, color=next(cycol),label = "rear roll angle = " + str(slope_rear) + "x + " + str(intercept_rear))
+    ax.scatter(accel_left, left_roll_total, marker = "o", s = 1, color=next(cycol),label = "total roll angle = " + str(slope_total) + "x + " + str(intercept_total))
+
+    abline(slope_front, intercept_front, "front regression")
+    abline(slope_rear, intercept_rear, "rear regression")
+    abline(slope_total, intercept_total, "total regression")
+
+    plt.xlabel("Lateral accel")
+    plt.ylabel("Roll Angle (downsampled) (deg)")
+    plt.title("Roll Angle v.s. Lateral Accel (left turn) for " + date)
+
+    # Shrink current axis by 20%
+    box = ax.get_position()
+    ax.set_position([box.x0, box.y0, box.width * 0.8, box.height])
+
+    # Put a legend to the right of the current axis
+    ax.legend(loc='center left', bbox_to_anchor=(1, 0.5))
+    return slope_front, slope_rear, slope_total
+
+
+def graph_right_turn_roll(df, date):
+    global fig_id
+    fig_id = fig_id+1
+    fig = plt.figure(fig_id)
+
+    right_turns_i = df.index[df["Acceleration Y (downsampled)"].astype(float)>0].tolist()
+    accel_right = (df["Acceleration Y (downsampled)"].iloc[right_turns_i]).astype(float)
+    right_roll_front = df["Front Roll Angle (downsampled)"].iloc[right_turns_i]
+    right_roll_rear = df["Rear Roll Angle (downsampled)"].iloc[right_turns_i]
+    right_roll_total = df["Total Roll Angle (downsampled)"].iloc[right_turns_i]
+
+    slope_front, intercept_front = linear_regression(accel_right, right_roll_front)
+    slope_rear, intercept_rear = linear_regression(accel_right, right_roll_rear)
+    slope_total, intercept_total = linear_regression(accel_right, right_roll_total)
+
+    # print("right turn front roll gradient for " + date + ": ", slope_front)
+    # print("right turn rear roll gradient for " + date + ": ", slope_rear)
+    # print("right turn total roll gradient for " + date + ": ", slope_total)
+
+    ax = plt.gca()
+    ax.scatter(accel_right, right_roll_front, marker = "o", s = 1, color=next(cycol),label = "front roll angle = " + str(slope_front) + "x + " + str(intercept_front))
+    ax.scatter(accel_right, right_roll_rear, marker = "o", s = 1, color=next(cycol),label = "rear roll angle = " + str(slope_rear) + "x + " + str(intercept_rear))
+    ax.scatter(accel_right, right_roll_total, marker = "o", s = 1, color=next(cycol),label = "total roll angle = " + str(slope_total) + "x + " + str(intercept_total))
+
+
+    abline(slope_front, intercept_front, "front regression")
+    abline(slope_rear, intercept_rear, "rear regression")
+    abline(slope_total, intercept_total, "total regression")
+
+    plt.xlabel("Lateral accel")
+    plt.ylabel("Roll Angle (downsampled) (deg)")
+    plt.title("Roll Angle v.s. Lateral Accel (right turn) for " + date)
+
+    # Shrink current axis by 20%
+    box = ax.get_position()
+    ax.set_position([box.x0, box.y0, box.width * 0.8, box.height])
+
+    # Put a legend to the right of the current axis
+    ax.legend(loc='center left', bbox_to_anchor=(1, 0.5))
+
+    return slope_front, slope_rear, slope_total
+
+
+def linear_regression(accel, roll):
+    #slope, intercept = np.polyfit(accel, roll, 1)
+    lr = linear_model.LinearRegression()
+    lr.fit(accel.values.reshape(len(accel), 1), roll)
+
+    return lr.coef_,  lr.intercept_
+
+def graph_rollvtime(df):
+    global fig_id
+    fig_id = fig_id+1
+    fig = plt.figure(fig_id)
+
+    rollAngleCols = ["Front Roll Angle", "Rear Roll Angle", "Acceleration Y"] #"Total Roll Angle"
+    for col in rollAngleCols:
+        y = df[col].astype(float)
+        ax = plt.gca()
+        ax.plot(df["Time"].astype(float), y, markersize=5, label = col, color=next(cycol))
+    
+    plt.xlabel("Time (s)")
+    plt.ylabel("Roll Angle (deg) and Accel (g)")
+    plt.title("Roll Angle and Accel" + " v.s. Time")
+
+    # Shrink current axis by 20%
+    box = ax.get_position()
+    ax.set_position([box.x0, box.y0, box.width * 0.8, box.height])
+
+    # Put a legend to the right of the current axis
+    ax.legend(loc='center left', bbox_to_anchor=(1, 0.5))
