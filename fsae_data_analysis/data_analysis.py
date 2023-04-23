@@ -79,19 +79,19 @@ graph_steer(df)
 #roll :)
 calc_roll_angle(df, front_track, rear_track)
 graph_rollvtime(df)
-df_downsampled = filter_downsample_rollangle(df)
+#df_downsampled = filter_downsample_rollangle(df)
 # left turns
-l_front_rg, l_rear_rg, l_total_rg = graph_left_turn_roll(df_downsampled, date)
+#l_front_rg, l_rear_rg, l_total_rg = graph_left_turn_roll(df_downsampled, date)
 
 # right turns
-r_front_rg, r_rear_rg, r_total_rg = graph_right_turn_roll(df_downsampled, date)
+#r_front_rg, r_rear_rg, r_total_rg = graph_right_turn_roll(df_downsampled, date)
 
 # roll stiffness
-m_roll = calc_roll_moment(cgh, center_rch, sprung_weight)
-KfrontL, KrearL, KtotL = calc_roll_stiffness(m_roll, l_front_rg, l_rear_rg, l_total_rg)
-KfrontR, KrearR, KtotR = calc_roll_stiffness(m_roll, r_front_rg, r_rear_rg, r_total_rg)
+#m_roll = calc_roll_moment(cgh, center_rch, sprung_weight)
+#KfrontL, KrearL, KtotL = calc_roll_stiffness(m_roll, l_front_rg, l_rear_rg, l_total_rg)
+#KfrontR, KrearR, KtotR = calc_roll_stiffness(m_roll, r_front_rg, r_rear_rg, r_total_rg)
 
-print(KfrontL, KfrontR)
-print(KrearL, KrearR)
-print(KtotL, KtotR)
+#print(KfrontL, KfrontR)
+#print(KrearL, KrearR)
+#print(KtotL, KtotR)
 plt.show()
