@@ -16,11 +16,15 @@ def process_data(csv_name):
 
 def process_2023_data(df):
     df["G Force Long"] = -1 * df["G Force Long"]
-    df["Vehicle Speed"] = df[["Wheel Speed FL","Wheel Speed FR"]].max(axis=1).astype(float)
+    try:
+        df["Ground Speed"] = df["Ground Speed"].astype(float)
+    except:
+        df["Ground Speed"] = df[["Wheel Speed FL","Wheel Speed FR"]].max(axis=1).astype(float)
+
     df["Brake Bias"] = df["Brake Pres Front"]/(df["Brake Pres Front"]+df["Brake Pres Rear"])
-    df["Corner Radius"] = (df["Vehicle Speed"].pow(2))/df["G Force Lat"]
-    df["Longitudinal Slip RR"] = (df["Wheel Speed RR"] - df["Vehicle Speed"])/df["Vehicle Speed"]
-    df["Longitudinal Slip RL"] = (df["Wheel Speed RL"] - df["Vehicle Speed"])/df["Vehicle Speed"]
+    df["Corner Radius"] = (df["Ground Speed"].pow(2))/df["G Force Lat"]
+    df["Longitudinal Slip RR"] = (df["Wheel Speed RR"] - df["Ground Speed"])/df["Ground Speed"]
+    df["Longitudinal Slip RL"] = (df["Wheel Speed RL"] - df["Ground Speed"])/df["Ground Speed"]
 
 def data_to_float(df):
     to_float = ["Damper Pos FL", "Damper Pos FR","Damper Pos RL", "Damper Pos RR", "Time","G Force Lat","G Force Long","Brake Pres Front","Brake Pres Rear", "Wheel Speed FL", "Wheel Speed FR", "Wheel Speed RL", "Wheel Speed RR"]

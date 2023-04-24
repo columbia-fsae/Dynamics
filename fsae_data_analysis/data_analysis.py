@@ -34,7 +34,7 @@ center_rch = (abs(rear_rch-front_rch)/wheelbase)*b + rear_rch # watch out for si
 
 date = "4_28"
 # pre-processing
-df = process_data("datafiles/"+sys.argv[1])
+df = process_data(sys.argv[1])
 
 # for offset dampers
 # ZERO offset		
@@ -75,7 +75,7 @@ graph_long_slip(df)
 # vehicle speed
 
 # Ax and Ay vs. time
-#graph_a(df)
+graph_a(df)
 
 #roll :)
 calc_roll_angle(df, front_track, rear_track)
