@@ -2,7 +2,7 @@ import pandas as pd
 import numpy as np
 
 def process_analysis_data(csv_name):
-    y_cols = ["Time","G Force Long", "G Force Lat", "G Force Vert", "Damper Pos FL", "Damper Pos FR", "Damper Pos RL", "Damper Pos RR", "Wheel Speed FL", "Wheel Speed FR", "Wheel Speed RL", "Wheel Speed RR", "Steering Wheel Angle", "Brake Pres Front","Brake Pres Rear"]
+    y_cols = ["Time","G Force Long", "G Force Lat", "G Force Vert", "Damper Pos FL", "Damper Pos FR", "Damper Pos RL", "Damper Pos RR", "Wheel Speed FL", "Wheel Speed FR", "Wheel Speed RL", "Wheel Speed RR", "Steering Wheel Angle", "Brake Pressure Front","Brake Pressure Rear"]
     df = pd.read_csv(csv_name, skiprows=14,low_memory=False)
     df = df.loc[:, y_cols]
     df = df.drop(df.iloc[[0]].index)
@@ -29,7 +29,7 @@ def process_2023_data(df):
     except:
         df["Ground Speed"] = df[["Wheel Speed FL","Wheel Speed FR"]].max(axis=1).astype(float)
 
-    df["Brake Bias"] = df["Brake Pres Front"]/(df["Brake Pres Front"]+df["Brake Pres Rear"])
+    df["Brake Bias"] = df["Brake Pressure Front"]/(df["Brake Pressure Front"]+df["Brake Pressure Rear"])
     df["Corner Radius"] = (df["Ground Speed"].pow(2))/df["G Force Lat"]
     df["Longitudinal Slip RR"] = (df["Wheel Speed RR"] - df["Ground Speed"])/df["Ground Speed"]
     df["Longitudinal Slip RL"] = (df["Wheel Speed RL"] - df["Ground Speed"])/df["Ground Speed"]

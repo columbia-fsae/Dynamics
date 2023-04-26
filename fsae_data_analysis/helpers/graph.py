@@ -315,7 +315,7 @@ def graph_brake_pres(df):
     fig_id = fig_id+1
     fig = plt.figure(fig_id)
 
-    brakePressures = ["Brake Pres Front", "Brake Pres Front"]
+    brakePressures = ["Brake Pressure Front", "Brake Pressure Front"]
     for col in brakePressures:
         y = df[col].astype(float)
         ax = plt.gca()
