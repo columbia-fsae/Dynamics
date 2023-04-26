@@ -3,10 +3,10 @@
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
-from graph import *
-from dampers import *
-from data import *
-from roll import *
+from helpers.graph import *
+from helpers.dampers import *
+from helpers.data import *
+from helpers.roll import *
 import sys
  
 # total arguments
@@ -34,7 +34,7 @@ center_rch = (abs(rear_rch-front_rch)/wheelbase)*b + rear_rch # watch out for si
 
 date = "4_28"
 # pre-processing
-df = process_data(sys.argv[1])
+df = process_analysis_data(sys.argv[1])
 
 # for offset dampers
 # ZERO offset		

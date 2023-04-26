@@ -174,14 +174,6 @@ def graph_histogram(df, col, axes):
         # Format y-axis label
     # x.yaxis.set_major_formatter(StrMethodFormatter('{x:,g}'))
 
-
-def abline(slope, intercept, label):
-    """Plot a line from slope and intercept"""
-    axes = plt.gca()
-    x_vals = np.array(axes.get_xlim())
-    y_vals = intercept + slope * x_vals
-    plt.plot(x_vals, y_vals, '--', color=next(cycol),label=label)
-
 def graph_left_turn_roll(df, date):
     global fig_id
     fig_id = fig_id+1
@@ -342,3 +334,59 @@ def graph_brake_pres(df):
 
 
 # brake bias v.s. front pressure (scatter plot)
+
+
+
+
+# battery temperatures
+def graph_battery_temps(df):
+    global fig_id
+    fig_id = fig_id+1
+    fig = plt.figure(fig_id)
+
+    for col in df.filter(like = "Battery Temp").columns:
+        ax = plt.gca()
+        ax.plot(df["Time"].astype(float), col, markersize=5, label = col, color=next(cycol))
+    
+    plt.xlabel("Time (s)")
+    plt.ylabel("Battery Temps (C)")
+    plt.title("Battery Temps" + " v.s. Time")
+
+    # Shrink current axis by 20%
+    box = ax.get_position()
+    ax.set_position([box.x0, box.y0, box.width * 0.8, box.height])
+
+    # Put a legend to the right of the current axis
+    ax.legend(loc='center left', bbox_to_anchor=(1, 0.5))
+
+
+# battery voltages
+def graph_battery_volts(df):
+    global fig_id
+    fig_id = fig_id+1
+    fig = plt.figure(fig_id)
+
+    for col in df.filter(like = "Battery Voltage").columns:
+        ax = plt.gca()
+        ax.plot(df["Time"].astype(float), col, markersize=5, label = col, color=next(cycol))
+    
+    plt.xlabel("Time (s)")
+    plt.ylabel("Battery Voltage (V)")
+    plt.title("Battery Voltages" + " v.s. Time")
+
+    # Shrink current axis by 20%
+    box = ax.get_position()
+    ax.set_position([box.x0, box.y0, box.width * 0.8, box.height])
+
+    # Put a legend to the right of the current axis
+    ax.legend(loc='center left', bbox_to_anchor=(1, 0.5))
+
+
+
+
+def abline(slope, intercept, label):
+    """Plot a line from slope and intercept"""
+    axes = plt.gca()
+    x_vals = np.array(axes.get_xlim())
+    y_vals = intercept + slope * x_vals
+    plt.plot(x_vals, y_vals, '--', color=next(cycol),label=label)
