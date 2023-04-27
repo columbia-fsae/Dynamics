@@ -42,9 +42,9 @@ df = process_analysis_data(sys.argv[1])
 # FR	1.45	mm
 # RL	-1.12	mm
 # RR	-2.65	mm
-apply_damper_offset(df, 3.15, 1.45, -1.12, -2.65)
+#apply_damper_offset(df, 3.15, 1.45, -1.12, -2.65)
 calc_damper_travel(df)
-calc_wheel_travel(df, front_IR, rear_IR)
+#calc_wheel_travel(df, front_IR, rear_IR)
 
 # graph damper position
 graph_damper_pos(df)
@@ -69,8 +69,8 @@ graph_steer(df)
 # throttle
 
 # brake pressures, longitudinal slip
-graph_brake_pres(df)
-graph_long_slip(df)
+#graph_brake_pres(df)
+#graph_long_slip(df)
 
 # vehicle speed
 
@@ -78,8 +78,8 @@ graph_long_slip(df)
 graph_a(df)
 
 #roll :)
-calc_roll_angle(df, front_track, rear_track)
-graph_rollvtime(df)
+#calc_roll_angle(df, front_track, rear_track)
+#graph_rollvtime(df)
 #df_downsampled = filter_downsample_rollangle(df)
 # left turns
 #l_front_rg, l_rear_rg, l_total_rg = graph_left_turn_roll(df_downsampled, date)

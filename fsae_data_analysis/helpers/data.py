@@ -6,6 +6,9 @@ def process_analysis_data(csv_name):
     df = pd.read_csv(csv_name, skiprows=14,low_memory=False)
     df = df.loc[:, y_cols]
     df = df.drop(df.iloc[[0]].index)
+
+    df = df[df["Time"].astype(float) > 1300]
+    df = df[df["Time"].astype(float) < 1400]
     df = df.reset_index()
     df = df.astype(np.float64)
 
@@ -15,8 +18,12 @@ def process_analysis_data(csv_name):
 
 def process_battery_data(csv_name):
     df = pd.read_csv(csv_name, skiprows=14,low_memory=False)
-    df = df.filter(regex='Battery Temp|Battery Voltage').columns
+    df = df.filter(regex='Battery Temp|Battery Voltage|Time')
+
     df = df.drop(df.iloc[[0]].index)
+    df = df[df["Time"].astype(float) > 1300]
+    df = df[df["Time"].astype(float) < 1400]
+
     df = df.reset_index()
     df = df.astype(np.float64)
 

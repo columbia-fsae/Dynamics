@@ -19,7 +19,7 @@ def graph_damper_pos(df):
     for col in damperPosCols:
         y = df[col].astype(float)
         ax = plt.gca()
-        ax.plot(df["Time"].astype(float), y, markersize=5, label = col, color=next(cycol))
+        ax.plot(df["Time"].astype(float), y, markersize=2, label = col, color=next(cycol))
     
     plt.xlabel("Time (s)")
     plt.ylabel("Damper Pos (mm)")
@@ -38,14 +38,14 @@ def graph_damper_vel(df):
     fig_id = fig_id+1
     fig = plt.figure(fig_id)
 
-    damperVelCols = ["Damper Velocity FL (in)", "Damper Velocity FR (in)", "Damper Velocity RL (in)", "Damper Velocity RR (in)"]
+    damperVelCols = ["Damper Velocity FL (mm)", "Damper Velocity FR (mm)", "Damper Velocity RL (mm)", "Damper Velocity RR (mm)"]
     for col in damperVelCols:
         y = df[col].astype(float)
         ax = plt.gca()
         ax.plot(df["Time"].astype(float), y, markersize=5, label = col, color=next(cycol))
     
     plt.xlabel("Time (s)")
-    plt.ylabel("Damper Vel (in/s)")
+    plt.ylabel("Damper Vel (mm/s)")
     plt.title("Damper Velocity" + " v.s. Time")
 
     # Shrink current axis by 20%
@@ -315,7 +315,7 @@ def graph_brake_pres(df):
     fig_id = fig_id+1
     fig = plt.figure(fig_id)
 
-    brakePressures = ["Brake Pressure Front", "Brake Pressure Front"]
+    brakePressures = ["Brake Pressure Front", "Brake Pressure Rear"]
     for col in brakePressures:
         y = df[col].astype(float)
         ax = plt.gca()
@@ -346,7 +346,7 @@ def graph_battery_temps(df):
 
     for col in df.filter(like = "Battery Temp").columns:
         ax = plt.gca()
-        ax.plot(df["Time"].astype(float), col, markersize=5, label = col, color=next(cycol))
+        ax.plot(df["Time"].astype(float), df[col], markersize=5, label = col, color=next(cycol))
     
     plt.xlabel("Time (s)")
     plt.ylabel("Battery Temps (C)")
@@ -368,7 +368,7 @@ def graph_battery_volts(df):
 
     for col in df.filter(like = "Battery Voltage").columns:
         ax = plt.gca()
-        ax.plot(df["Time"].astype(float), col, markersize=5, label = col, color=next(cycol))
+        ax.plot(df["Time"].astype(float), df[col], markersize=5, label = col, color=next(cycol))
     
     plt.xlabel("Time (s)")
     plt.ylabel("Battery Voltage (V)")

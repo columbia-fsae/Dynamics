@@ -15,3 +15,5 @@ if n > 2:
 df = process_battery_data(sys.argv[1])
 graph_battery_temps(df)
 graph_battery_volts(df)
+
+plt.show()
