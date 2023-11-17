@@ -31,7 +31,7 @@ tot_weight = 713.9 #lb
 cgh = 9.831 #in
 center_rch = (abs(rear_rch-front_rch)/wheelbase)*b + rear_rch # watch out for signs here -- this works because our rear roll center is lower than the front
 
-
+print(sys.argv[1])
 date = "4_28"
 # pre-processing
 df = process_analysis_data(sys.argv[1])
