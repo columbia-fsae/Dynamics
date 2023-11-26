@@ -1,14 +1,10 @@
 #!/usr/bin/env python3
 
-import pandas as pd
-import numpy as np
-import matplotlib.pyplot as plt
 from helpers.graph import *
 from helpers.dampers import *
 from helpers.data import *
-from helpers.roll import *
 import sys
- 
+
 # total arguments
 n = len(sys.argv)
 if n > 2:
@@ -35,6 +31,7 @@ print(sys.argv[1])
 date = "4_28"
 # pre-processing
 df = process_analysis_data(sys.argv[1])
+plt.rcParams["figure.figsize"] = (20, 20)
 
 # for offset dampers
 # ZERO offset		
@@ -69,13 +66,17 @@ graph_steer(df)
 # throttle
 
 # brake pressures, longitudinal slip
-#graph_brake_pres(df)
-#graph_long_slip(df)
+graph_brake_pres(df)
+graph_long_slip(df)
 
 # vehicle speed
 
 # Ax and Ay vs. time
 graph_a(df)
+
+# Coolant flow and temperature
+graph_coolant_temp(df)
+graph_coolant_flow(df)
 
 #roll :)
 #calc_roll_angle(df, front_track, rear_track)

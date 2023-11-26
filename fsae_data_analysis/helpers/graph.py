@@ -1,4 +1,3 @@
-import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 from sklearn import linear_model
@@ -9,11 +8,14 @@ cycol = cycle('bgrcmk')
 
 global fig_id
 fig_id = 0
+
+
 # graph damper position:
 def graph_damper_pos(df):
     global fig_id
     fig_id = fig_id+1
     fig = plt.figure(fig_id)
+    ax = plt.gca()
 
     damperPosCols = ["Damper Pos FL", "Damper Pos FR", "Damper Pos RL", "Damper Pos RR"]
     for col in damperPosCols:
@@ -37,11 +39,11 @@ def graph_damper_vel(df):
     global fig_id
     fig_id = fig_id+1
     fig = plt.figure(fig_id)
+    ax = plt.gca()
 
     damperVelCols = ["Damper Velocity FL (mm)", "Damper Velocity FR (mm)", "Damper Velocity RL (mm)", "Damper Velocity RR (mm)"]
     for col in damperVelCols:
         y = df[col].astype(float)
-        ax = plt.gca()
         ax.plot(df["Time"].astype(float), y, markersize=5, label = col, color=next(cycol))
     
     plt.xlabel("Time (s)")
@@ -54,6 +56,7 @@ def graph_damper_vel(df):
 
     # Put a legend to the right of the current axis
     ax.legend(loc='center left', bbox_to_anchor=(1, 0.5))
+
 
 # graph steering wheel angle
 def graph_steer(df):
@@ -90,11 +93,11 @@ def graph_a(df):
     global fig_id
     fig_id = fig_id+1
     fig = plt.figure(fig_id)
+    ax = plt.gca()
 
     aCols = ["G Force Long", "G Force Lat"]
     for col in aCols:
         y = df[col]
-        ax = plt.gca()
         ax.plot(df["Time"], y, markersize=5, label = col, color=next(cycol))
     
     plt.xlabel("Time (s)")
@@ -113,13 +116,13 @@ def graph_wheel_speed(df):
     global fig_id
     fig_id = fig_id+1
     fig = plt.figure(fig_id)
+    ax = plt.gca()
 
     wheelSpeedCols = ["Wheel Speed FL", "Wheel Speed FR", "Wheel Speed RL", "Wheel Speed RR"]
     for col in wheelSpeedCols:
-        y = df[col]
-        ax = plt.gca()
+        y = df[col].to_numpy()
         ax.plot(df["Time"], y, markersize=5, label = col, color=next(cycol))
-    
+
     plt.xlabel("Time (s)")
     plt.ylabel("Wheel Speed (km/h)")
     plt.title("Wheel Speed" + " v.s. Time")
@@ -142,6 +145,8 @@ def graph_damper_vel_hist(df):
     graph_histogram(df, "Damper Velocity FR (in)",axes = ax2)
     graph_histogram(df, "Damper Velocity RL (in)",axes = ax3)
     graph_histogram(df, "Damper Velocity RR (in)",axes = ax4)
+
+
 def graph_histogram(df, col, axes):
     bins = []
     for i in range(-20, 21):
@@ -155,24 +160,25 @@ def graph_histogram(df, col, axes):
     x.spines['top'].set_visible(False)
     x.spines['left'].set_visible(False)
 
-        # Switch off ticks
+    # Switch off ticks
     x.tick_params(axis="both", which="both", bottom="off", top="off", labelbottom="on", left="off", right="off", labelleft="on")
 
-        # Draw horizontal axis lines
+    # Draw horizontal axis lines
     vals = x.get_yticks()
     for tick in vals:
         x.axhline(y=tick, linestyle='dashed', alpha=0.4, color='#eeeeee', zorder=1)
 
-        # Remove title
+    # Remove title
     x.set_title(col + " Frequency")
 
-        # Set x-axis label
+    # Set x-axis label
     x.set_xlabel(col, labelpad=10, size=12)
 
-        # Set y-axis label
+    # Set y-axis label
     x.set_ylabel("Frequency", labelpad=10, size=12)
-        # Format y-axis label
+    # Format y-axis label
     # x.yaxis.set_major_formatter(StrMethodFormatter('{x:,g}'))
+
 
 def graph_left_turn_roll(df, date):
     global fig_id
@@ -239,7 +245,6 @@ def graph_right_turn_roll(df, date):
     ax.scatter(accel_right, right_roll_rear, marker = "o", s = 1, color=next(cycol),label = "rear roll angle = " + str(slope_rear) + "x + " + str(intercept_rear))
     ax.scatter(accel_right, right_roll_total, marker = "o", s = 1, color=next(cycol),label = "total roll angle = " + str(slope_total) + "x + " + str(intercept_total))
 
-
     abline(slope_front, intercept_front, "front regression")
     abline(slope_rear, intercept_rear, "rear regression")
     abline(slope_total, intercept_total, "total regression")
@@ -259,21 +264,22 @@ def graph_right_turn_roll(df, date):
 
 
 def linear_regression(accel, roll):
-    #slope, intercept = np.polyfit(accel, roll, 1)
+    # slope, intercept = np.polyfit(accel, roll, 1)
     lr = linear_model.LinearRegression()
     lr.fit(accel.values.reshape(len(accel), 1), roll)
 
     return lr.coef_,  lr.intercept_
 
+
 def graph_rollvtime(df):
     global fig_id
     fig_id = fig_id+1
     fig = plt.figure(fig_id)
+    ax = plt.gca()
 
-    rollAngleCols = ["Front Roll Angle", "Rear Roll Angle", "G Force Lat"] #"Total Roll Angle"
+    rollAngleCols = ["Front Roll Angle", "Rear Roll Angle", "G Force Lat"]  # "Total Roll Angle"
     for col in rollAngleCols:
         y = df[col].astype(float)
-        ax = plt.gca()
         ax.plot(df["Time"].astype(float), y, markersize=5, label = col, color=next(cycol))
     
     plt.xlabel("Time (s)")
@@ -291,11 +297,11 @@ def graph_long_slip(df):
     global fig_id
     fig_id = fig_id+1
     fig = plt.figure(fig_id)
+    ax = plt.gca()
 
     longSlipPercent = ["Longitudinal Slip RL", "Longitudinal Slip RR"]
     for col in longSlipPercent:
         y = df[col].astype(float)
-        ax = plt.gca()
         ax.plot(df["Time"].astype(float), y, markersize=5, label = col, color=next(cycol))
     
     plt.xlabel("Time (s)")
@@ -309,16 +315,17 @@ def graph_long_slip(df):
     # Put a legend to the right of the current axis
     ax.legend(loc='center left', bbox_to_anchor=(1, 0.5))
 
+
 # brake pressures v.s. time
 def graph_brake_pres(df):
     global fig_id
     fig_id = fig_id+1
     fig = plt.figure(fig_id)
+    ax = plt.gca()
 
     brakePressures = ["Brake Pressure Front", "Brake Pressure Rear"]
     for col in brakePressures:
         y = df[col].astype(float)
-        ax = plt.gca()
         ax.plot(df["Time"].astype(float), y, markersize=5, label = col, color=next(cycol))
     
     plt.xlabel("Time (s)")
@@ -331,11 +338,7 @@ def graph_brake_pres(df):
 
     # Put a legend to the right of the current axis
     ax.legend(loc='center left', bbox_to_anchor=(1, 0.5))
-
-
 # brake bias v.s. front pressure (scatter plot)
-
-
 
 
 # battery temperatures
@@ -343,9 +346,9 @@ def graph_battery_temps(df):
     global fig_id
     fig_id = fig_id+1
     fig = plt.figure(fig_id)
+    ax = plt.gca()
 
-    for col in df.filter(like = "Battery Temp").columns:
-        ax = plt.gca()
+    for col in df.filter(like="Battery Temp").columns:
         ax.plot(df["Time"].astype(float), df[col], markersize=5, label = col, color=next(cycol))
     
     plt.xlabel("Time (s)")
@@ -365,9 +368,9 @@ def graph_battery_volts(df):
     global fig_id
     fig_id = fig_id+1
     fig = plt.figure(fig_id)
+    ax = plt.gca()
 
-    for col in df.filter(like = "Battery Voltage").columns:
-        ax = plt.gca()
+    for col in df.filter(like="Battery Voltage").columns:
         ax.plot(df["Time"].astype(float), df[col], markersize=5, label = col, color=next(cycol))
     
     plt.xlabel("Time (s)")
@@ -382,11 +385,44 @@ def graph_battery_volts(df):
     ax.legend(loc='center left', bbox_to_anchor=(1, 0.5))
 
 
-
-
 def abline(slope, intercept, label):
     """Plot a line from slope and intercept"""
     axes = plt.gca()
     x_vals = np.array(axes.get_xlim())
     y_vals = intercept + slope * x_vals
     plt.plot(x_vals, y_vals, '--', color=next(cycol),label=label)
+
+
+def graph_coolant_temp(df):
+    global fig_id
+    fig_id = fig_id + 1
+    fig = plt.figure(fig_id)
+    ax = plt.gca()
+
+    for col in df.filter(like="Coolant Temperature").columns:
+        ax.plot(df["Time"].astype(float), df[col], markersize=5, label=col, color=next(cycol))
+
+    plt.xlabel("Time (s)")
+    plt.ylabel("Coolant temperature (°C)")
+    plt.title("Coolant Temperature" + " v.s. Time")
+
+    # Shrink current axis by 20%
+    box = ax.get_position()
+    ax.set_position([box.x0, box.y0, box.width * 0.8, box.height])
+
+    # Put a legend to the right of the current axis
+    ax.legend(loc='center left', bbox_to_anchor=(1, 0.5))
+
+
+def graph_coolant_flow(df):
+    global fig_id
+    fig_id = fig_id + 1
+    fig = plt.figure(fig_id)
+
+    y = df['GP Vol Flow 1'].to_numpy()
+    ax = plt.gca()
+    ax.plot(df["Time"].astype(float), y, markersize=5)
+
+    plt.xlabel("Time (s)")
+    plt.ylabel("Coolant Flow (ml/s)")
+    plt.title("Coolant Flow" + " v.s. Time")
