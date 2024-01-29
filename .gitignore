@@ -3,3 +3,5 @@
 __pycache__/
 fsae_data_analysis/__pycache__/*.pyc
 fsae_data_analysis/datafiles/*
+.venv/
+fsae_data_analysis/outputs/*
