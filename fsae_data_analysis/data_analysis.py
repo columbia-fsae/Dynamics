@@ -4,6 +4,7 @@ from helpers.graph import *
 from helpers.dampers import *
 from helpers.data import *
 import sys
+import os
 
 # total arguments
 n = len(sys.argv)
@@ -31,6 +32,11 @@ print(sys.argv[1])
 date = "4_28"
 # pre-processing
 df = process_analysis_data(sys.argv[1])
+
+filename = os.path.basename(sys.argv[1])
+cleaned_filename = os.path.splitext(filename)[0]
+df.name = cleaned_filename
+
 plt.rcParams["figure.figsize"] = (20, 20)
 
 # for offset dampers
@@ -44,7 +50,7 @@ calc_damper_travel(df)
 #calc_wheel_travel(df, front_IR, rear_IR)
 
 # graph damper position
-graph_damper_pos(df)
+graph_damper_pos(df, saveFig=True)
 
 # wheel center v.s. time
 
@@ -52,31 +58,31 @@ graph_damper_pos(df)
 calc_damper_velocity(df)
 #graph_damper_vel(df)
 # histograms for damper velocity
-graph_damper_vel_hist(df)
+graph_damper_vel_hist(df, saveFig=True)
 
 # wheel speed v.s. time
 # might need to add virtual channel to convert this to km/h
-graph_wheel_speed(df)
+graph_wheel_speed(df, saveFig=True)
 
 # g-g diagram
-graph_gg(df)
+graph_gg(df, saveFig=True)
 
 # steering
-graph_steer(df)
+graph_steer(df, saveFig=True)
 # throttle
 
 # brake pressures, longitudinal slip
-graph_brake_pres(df)
-graph_long_slip(df)
+graph_brake_pres(df, saveFig=True)
+graph_long_slip(df, saveFig=True)
 
 # vehicle speed
 
 # Ax and Ay vs. time
-graph_a(df)
+graph_a(df, saveFig=True)
 
 # Coolant flow and temperature
-graph_coolant_temp(df)
-graph_coolant_flow(df)
+graph_coolant_temp(df, saveFig=True)
+graph_coolant_flow(df, saveFig=True)
 
 #roll :)
 #calc_roll_angle(df, front_track, rear_track)

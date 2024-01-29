@@ -11,7 +11,7 @@ fig_id = 0
 
 
 # graph damper position:
-def graph_damper_pos(df):
+def graph_damper_pos(df, saveFig=False, testName=""):
     global fig_id
     fig_id = fig_id+1
     fig = plt.figure(fig_id)
@@ -33,9 +33,12 @@ def graph_damper_pos(df):
 
     # Put a legend to the right of the current axis
     ax.legend(loc='center left', bbox_to_anchor=(1, 0.5))
+    if saveFig:
+        plt.tight_layout()
+        plt.savefig("./outputs/%s_damper_pos.png" % df.name, bbox_inches='tight')
 
 # graph damper velocity:
-def graph_damper_vel(df):
+def graph_damper_vel(df, saveFig=False):
     global fig_id
     fig_id = fig_id+1
     fig = plt.figure(fig_id)
@@ -56,10 +59,13 @@ def graph_damper_vel(df):
 
     # Put a legend to the right of the current axis
     ax.legend(loc='center left', bbox_to_anchor=(1, 0.5))
+    if saveFig:
+        plt.tight_layout()
+        plt.savefig("./outputs/%s_damper_vel.png" % df.name, bbox_inches='tight')
 
 
 # graph steering wheel angle
-def graph_steer(df):
+def graph_steer(df, saveFig=False):
     global fig_id
     fig_id = fig_id+1
     fig = plt.figure(fig_id)
@@ -70,10 +76,13 @@ def graph_steer(df):
     plt.xlabel("Time (s)")
     plt.ylabel("Steering Wheel Angle (def)")
     plt.title("Steering Wheel Angle v.s. Time")
+    if saveFig:
+        plt.tight_layout()
+        plt.savefig("./outputs/%s_steer_angle.png" % df.name, bbox_inches='tight')
 
 
 # graph the g-g diagram
-def graph_gg(df):
+def graph_gg(df, saveFig=False):
     global fig_id
     fig_id = fig_id+1
     fig = plt.figure(fig_id)
@@ -87,9 +96,12 @@ def graph_gg(df):
     plt.xlabel("Ay (g)")
     plt.ylabel("Ax (g)")
     plt.title("g-g Diagram")
+    if saveFig:
+        plt.tight_layout()
+        plt.savefig("./outputs/%s_gg.png" % df.name, bbox_inches='tight')
 
 # graph ax v.s. time
-def graph_a(df):
+def graph_a(df, saveFig=False):
     global fig_id
     fig_id = fig_id+1
     fig = plt.figure(fig_id)
@@ -110,9 +122,12 @@ def graph_a(df):
 
     # Put a legend to the right of the current axis
     ax.legend(loc='center left', bbox_to_anchor=(1, 0.5))
+    if saveFig:
+        plt.tight_layout()
+        plt.savefig("./outputs/%s_accel.png" % df.name, bbox_inches='tight')
 
 # graph wheel speed:
-def graph_wheel_speed(df):
+def graph_wheel_speed(df, saveFig=False):
     global fig_id
     fig_id = fig_id+1
     fig = plt.figure(fig_id)
@@ -133,9 +148,12 @@ def graph_wheel_speed(df):
 
     # Put a legend to the right of the current axis
     ax.legend(loc='center left', bbox_to_anchor=(1, 0.5))
+    if saveFig:
+        plt.tight_layout()
+        plt.savefig("./outputs/%s_wheel_speed.png" % df.name, bbox_inches='tight')
 
 
-def graph_damper_vel_hist(df):
+def graph_damper_vel_hist(df, saveFig=False):
     global fig_id
     fig_id = fig_id+1
     fig = plt.figure(fig_id)
@@ -145,9 +163,12 @@ def graph_damper_vel_hist(df):
     graph_histogram(df, "Damper Velocity FR (in)",axes = ax2)
     graph_histogram(df, "Damper Velocity RL (in)",axes = ax3)
     graph_histogram(df, "Damper Velocity RR (in)",axes = ax4)
+    if saveFig:
+        plt.tight_layout()
+        plt.savefig("./outputs/%s_damper_vel.png" % df.name, bbox_inches='tight')
 
 
-def graph_histogram(df, col, axes):
+def graph_histogram(df, col, axes, saveFig=False):
     bins = []
     for i in range(-20, 21):
         bins.append(i)
@@ -180,7 +201,7 @@ def graph_histogram(df, col, axes):
     # x.yaxis.set_major_formatter(StrMethodFormatter('{x:,g}'))
 
 
-def graph_left_turn_roll(df, date):
+def graph_left_turn_roll(df, date, saveFig=False):
     global fig_id
     fig_id = fig_id+1
     fig = plt.figure(fig_id)
@@ -221,7 +242,7 @@ def graph_left_turn_roll(df, date):
     return slope_front, slope_rear, slope_total
 
 
-def graph_right_turn_roll(df, date):
+def graph_right_turn_roll(df, date, saveFig=False):
     global fig_id
     fig_id = fig_id+1
     fig = plt.figure(fig_id)
@@ -271,7 +292,7 @@ def linear_regression(accel, roll):
     return lr.coef_,  lr.intercept_
 
 
-def graph_rollvtime(df):
+def graph_rollvtime(df, saveFig=False):
     global fig_id
     fig_id = fig_id+1
     fig = plt.figure(fig_id)
@@ -292,8 +313,11 @@ def graph_rollvtime(df):
 
     # Put a legend to the right of the current axis
     ax.legend(loc='center left', bbox_to_anchor=(1, 0.5))
+    if saveFig:
+        plt.tight_layout()
+        plt.savefig("./outputs/%s_roll_angle_accel.png" % df.name, bbox_inches='tight')
 
-def graph_long_slip(df):
+def graph_long_slip(df, saveFig=False):
     global fig_id
     fig_id = fig_id+1
     fig = plt.figure(fig_id)
@@ -314,10 +338,13 @@ def graph_long_slip(df):
 
     # Put a legend to the right of the current axis
     ax.legend(loc='center left', bbox_to_anchor=(1, 0.5))
+    if saveFig:
+        plt.tight_layout()
+        plt.savefig("./outputs/%s_long_slip.png" % df.name, bbox_inches='tight')
 
 
 # brake pressures v.s. time
-def graph_brake_pres(df):
+def graph_brake_pres(df, saveFig=False):
     global fig_id
     fig_id = fig_id+1
     fig = plt.figure(fig_id)
@@ -339,10 +366,13 @@ def graph_brake_pres(df):
     # Put a legend to the right of the current axis
     ax.legend(loc='center left', bbox_to_anchor=(1, 0.5))
 # brake bias v.s. front pressure (scatter plot)
+    if saveFig:
+        plt.tight_layout()
+        plt.savefig("./outputs/%s_brake_pres.png" % df.name, bbox_inches='tight')
 
 
 # battery temperatures
-def graph_battery_temps(df):
+def graph_battery_temps(df, saveFig=False):
     global fig_id
     fig_id = fig_id+1
     fig = plt.figure(fig_id)
@@ -362,9 +392,13 @@ def graph_battery_temps(df):
     # Put a legend to the right of the current axis
     ax.legend(loc='center left', bbox_to_anchor=(1, 0.5))
 
+    if saveFig:
+        plt.tight_layout()
+        plt.savefig("./outputs/%s_battery_temp.png" % df.name, bbox_inches='tight')
+
 
 # battery voltages
-def graph_battery_volts(df):
+def graph_battery_volts(df, saveFig=False):
     global fig_id
     fig_id = fig_id+1
     fig = plt.figure(fig_id)
@@ -383,6 +417,9 @@ def graph_battery_volts(df):
 
     # Put a legend to the right of the current axis
     ax.legend(loc='center left', bbox_to_anchor=(1, 0.5))
+    if saveFig:
+        plt.tight_layout()
+        plt.savefig("./outputs/%s_battery_volts.png" % df.name, bbox_inches='tight')
 
 
 def abline(slope, intercept, label):
@@ -393,7 +430,7 @@ def abline(slope, intercept, label):
     plt.plot(x_vals, y_vals, '--', color=next(cycol),label=label)
 
 
-def graph_coolant_temp(df):
+def graph_coolant_temp(df, saveFig=False):
     global fig_id
     fig_id = fig_id + 1
     fig = plt.figure(fig_id)
@@ -413,8 +450,12 @@ def graph_coolant_temp(df):
     # Put a legend to the right of the current axis
     ax.legend(loc='center left', bbox_to_anchor=(1, 0.5))
 
+    if saveFig:
+        plt.tight_layout()
+        plt.savefig("./outputs/%s_coolant_temp.png" % df.name, bbox_inches='tight')
 
-def graph_coolant_flow(df):
+
+def graph_coolant_flow(df, saveFig=False):
     global fig_id
     fig_id = fig_id + 1
     fig = plt.figure(fig_id)
@@ -426,3 +467,8 @@ def graph_coolant_flow(df):
     plt.xlabel("Time (s)")
     plt.ylabel("Coolant Flow (ml/s)")
     plt.title("Coolant Flow" + " v.s. Time")
+
+    if saveFig:
+        plt.tight_layout()
+        plt.savefig("./outputs/%s_coolant_flow.png" % df.name, bbox_inches='tight')
+
